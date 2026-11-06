@@ -1,0 +1,216 @@
+# LUMORA - COMPREHENSIVE PROJECT DOCUMENTATION
+
+---
+
+## 📌 1. EXECUTIVE SUMMARY & OVERVIEW
+
+**Lumora** is a free, modern Android application built for AI creators, artists, and enthusiasts. Lumora enables users to discover trending AI-generated image prompts, copy them with a single tap, or share them directly to third-party AI image creation platforms (e.g. ChatGPT, Midjourney, Bing Image Creator, Photoleap, Stable Diffusion).
+
+### Key Product Highlights:
+- **Zero-Friction Access:** Anonymous silent login allows instant browsing and copying without mandatory sign-up.
+- **Modern Tech Stack:** 100% Java source code, single-activity architecture, ViewBinding, MVVM (ViewModel + LiveData), and Repository pattern.
+- **Free Tier Cloud Services:** Powered entirely by free-tier services — Google Firebase (Auth, Firestore, Messaging, Remote Config, Crashlytics, Analytics), Cloudinary (Image Hosting & Transformations), and Google AdMob (Native & Rewarded Ads).
+- **Luminous AI Design System:** Material 3 Day/Night theme featuring the Luminous Violet Indigo palette (`#6367FF`).
+
+---
+
+## 🛠️ 2. TECHNICAL SPECIFICATIONS & TECH STACK
+
+| Layer | Technology | Details |
+|-------|------------|---------|
+| **Language** | Pure Java | Min SDK 24 (Android 7.0), Target/Compile SDK 36. |
+| **UI Framework** | Material 3 + ViewBinding | Modern Day/Night theming with custom tokens. |
+| **Architecture** | MVVM + Repository Pattern | Clean separation of UI, business logic, and network repositories. |
+| **Database** | Cloud Firestore | Offline cache support, cursor pagination, direct `.get()` reads. |
+| **Authentication** | Firebase Auth | Anonymous Auth + Google Sign-In via Credential Manager & Legacy fallback. |
+| **Image Pipeline** | Cloudinary SDK (v3.1.3) + Glide (v4.16.0) | Unsigned image uploads with `w_500,f_auto,q_auto` dynamic transformations. |
+| **Monetization** | Google AdMob & UMP Consent | Rewarded Ads for copy/share rules + Randomized Native Feed In-Card Ads. |
+| **Push Notifications**| Firebase Cloud Messaging (FCM) | Topic `"all"` subscription with direct `templateId` deep-linking. |
+| **App Updates** | Remote Config + Firestore Doc | Dual-layer app update checker (`latest_version_code`, `apk_download_url`). |
+
+---
+
+## 📱 3. CORE FEATURES & USER FLOWS
+
+### A) Frictionless Onboarding & Discovery
+1. **Silent Anonymous Login:** On first launch, the app generates a silent Firebase Anonymous UID so the user can immediately browse, search, and copy prompts.
+2. **Home Feeds:**
+   - **Trending This Week Carousel:** Displays top viral prompts calculated by ISO week engagement scores (`copyCount*1 + shareCount*2 + likeCount*1`).
+   - **Fresh Prompts Masonry Grid:** 2-column Staggered Grid that dynamically adjusts card heights based on natural image aspect ratios.
+   - **Category Filter Chips:** Instant feed filtering across 8 fixed categories (*Portraits, Couple, Traditional, Cinematic, Anime, Festival, Pets, Product*).
+3. **Cursor Pagination & Refresh:** Loads 20 items per page with Firestore cursor pagination; supports pull-to-refresh (`SwipeRefreshLayout`).
+
+### B) Fast Search Engine
+1. **Debounced Search Input:** 300 ms typing delay handler to optimize Firestore read quotas.
+2. **Prefix Keyword Matching:** Matches 2-to-12 character prefix tokens generated in `searchKeywords` array. Integrated with **Algolia Instant Search Engine** fallback.
+3. **Recent Search History:** Local storage in `SharedPreferences` (max 8 items, clearable).
+4. **Hashtag Deep Linking:** Tapping any `#tag` chip on a template detail page opens the Search tab populated with that tag.
+
+### C) Template Detail & Copy/Share Rules
+1. **Hero Display:** Full-width image framing with floating back (`<`) and flag (`🚩`) report buttons.
+2. **Selectable Prompt Card:** Copyable prompt in clean monospace font.
+3. **Copy Counter & Ad Rule:**
+   - Copies 1 to 4 are free and instant.
+   - On the 5th copy, the button switches to **"Watch ad to copy"** and plays an AdMob Rewarded Ad.
+   - *Fail-Open Fallback:* If an ad fails to load or is unavailable, the prompt is copied anyway to ensure the user is never blocked.
+4. **Share with AI:** Plays a rewarded ad check, copies text to clipboard, and opens the Android System Share Chooser (`ACTION_SEND`) to share text directly with AI apps.
+
+### D) Account & Engagement (Google Auth)
+1. **Google Account Linking:** Linking Google Credential to Anonymous account preserves all saved items and likes.
+2. **Optimistic Interactions:** Instant UI icon state toggle (`ic_heart_filled` / `ic_bookmark_filled`) with haptic feedback.
+3. **Saved Collection:** Denormalized card documents stored in `/users/{uid}/saves` for single-query fast offline loading.
+4. **Report System:** In-app report dialog writing to `/reports/{uid_templateId}` enforcing 1 report per user per template.
+
+---
+
+## 🗄️ 4. DATABASE SCHEMA & DATA FLOW
+
+### 1. Main Prompts Collection: `/templates/{templateId}`
+```json
+{
+  "templateId": "tpl_9a8f7b6c",
+  "title": "Maharani Velvet Portrait",
+  "prompt": "A royal Indian Maharani wearing a deep crimson velvet lehenga...",
+  "negativePrompt": "no blur, no low quality, no extra limbs",
+  "aiModel": "DALL-E 3 / ChatGPT",
+  "aspectRatio": "4:5",
+  "imageUrl": "https://res.cloudinary.com/teniiugx/image/upload/v1/lumora/templates/sample.jpg",
+  "width": 1080,
+  "height": 1350,
+  "category": "Portraits",
+  "tags": ["maharani", "portrait", "traditional"],
+  "searchKeywords": ["ma", "mah", "maha", "mahar", "maharani", ...],
+  "isFeatured": true,
+  "isActive": true,
+  "createdAt": "March 30, 2026 at 10:00:00 AM UTC+5:30",
+  "createdBy": "efvxUtz4C8WHfYuTPOFrWoHxiYP2",
+  "copyCount": 12,
+  "shareCount": 5,
+  "likeCount": 24,
+  "weekId": "2026-W44",
+  "weeklyScore": 48
+}
+```
+
+### 2. User Likes Sub-collection: `/users/{uid}/likes/{templateId}`
+```json
+{
+  "createdAt": "March 30, 2026 at 10:05:00 AM"
+}
+```
+
+### 3. User Saves Sub-collection: `/users/{uid}/saves/{templateId}`
+```json
+{
+  "title": "Maharani Velvet Portrait",
+  "imageUrl": "https://res.cloudinary.com/teniiugx/...",
+  "width": 1080,
+  "height": 1350,
+  "category": "Portraits",
+  "createdAt": "March 30, 2026 at 10:05:00 AM"
+}
+```
+
+### 4. User Reports Collection: `/reports/{reportId}`
+```json
+{
+  "templateId": "tpl_9a8f7b6c",
+  "uid": "efvxUtz4C8WHfYuTPOFrWoHxiYP2",
+  "reason": "Inappropriate or offensive content",
+  "createdAt": "March 30, 2026 at 10:10:00 AM"
+}
+```
+
+### 5. Admins Marker Collection: `/admins/{uid}`
+- Presence of document verify super admin status.
+
+---
+
+## 🎨 5. DESIGN SYSTEM & COLOR PALETTE
+
+- **Theme Name:** *Luminous AI Creative Palette*
+- **Primary Brand Accent:** `#6367FF` (Vibrant Indigo / Violet)
+- **Secondary Accent:** `#8494FF` (Soft Lavender Blue)
+- **Light Theme Background:** Warm Silk Cream Off-White (`#FAF8F5`), Surface (`#FFFFFF`)
+- **Dark Theme Background:** Deep Midnight Obsidian (`#0C0A09`), Surface (`#161426`)
+- **Border Hairlines:** Light (`#E7E5E4`), Dark (`#282442`)
+
+---
+
+## 🛡️ 6. FIRESTORE SECURITY RULES
+
+```rules
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; }
+    function isNonAnonymous() { return isSignedIn() && request.auth.token.firebase.sign_in_provider != 'anonymous'; }
+    function isAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
+
+    match /admins/{uid} {
+      allow read: if isSignedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /templates/{templateId} {
+      allow read: if isSignedIn() && (resource.data.isActive == true || isAdmin());
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (
+        isSignedIn() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['copyCount', 'shareCount', 'likeCount', 'weekId', 'weeklyScore']) &&
+        (request.resource.data.copyCount - resource.data.copyCount <= 1) &&
+        (request.resource.data.shareCount - resource.data.shareCount <= 1) &&
+        (request.resource.data.likeCount - resource.data.likeCount <= 1 && request.resource.data.likeCount - resource.data.likeCount >= -1)
+      );
+    }
+
+    match /users/{uid} {
+      allow read, write: if isNonAnonymous() && request.auth.uid == uid;
+      match /likes/{templateId} { allow read, write: if isNonAnonymous() && request.auth.uid == uid; }
+      match /saves/{templateId} { allow read, write: if isNonAnonymous() && request.auth.uid == uid; }
+    }
+
+    match /reports/{reportId} {
+      allow create: if isNonAnonymous() && reportId.startsWith(request.auth.uid + "_");
+      allow read, delete: if isAdmin();
+      allow update: if false;
+    }
+  }
+}
+```
+
+---
+
+## ⚙️ 7. CONFIGURATION KEYS SUMMARY
+
+| Key | Configured Value |
+|-----|------------------|
+| **Package Name** | `com.amrit.lumora` |
+| **App Download Website** | `https://amrit-anand08.github.io/Lumora-app/` |
+| **Debug SHA-1** | `D0:BE:B4:B6:DC:C7:6E:73:C4:03:46:17:BC:5E:26:FD:2B:9F:BF:4E` |
+| **AdMob App ID** | `ca-app-pub-1398789064600431~4389754764` |
+| **Rewarded Ad ID** | `ca-app-pub-1398789064600431/3403976158` |
+| **Native Ad ID** | `ca-app-pub-1398789064600431/5332135490` |
+| **Cloudinary Cloud Name** | `teniiugx` |
+| **Cloudinary Preset** | `lumora_preset` |
+
+---
+
+## 📦 8. DEPLOYMENT & MAINTENANCE GUIDE
+
+### How to Build Signed Release APK:
+1. Run `./gradlew app:assembleRelease` in Android Studio terminal.
+2. Locate the output file at:
+   `D:\downloads\android studio\Lumora\app\build\outputs\apk\release\app-release.apk`
+3. Rename `app-release.apk` to **`Lumora-v1.0.apk`**.
+4. Upload `Lumora-v1.0.apk` to your GitHub repo at `https://amrit-anand08.github.io/Lumora-app/`.
+
+### How to Broadcast a New App Update:
+1. Open Lumora app -> **Profile** tab -> **Admin Panel** -> Go to **Broadcast App Update** section.
+2. Enter New Version Code (`2`), APK Download URL (`https://amrit-anand08.github.io/Lumora-app/`), and Update Message.
+3. Tap **Broadcast App Update To Users**. All app installs will prompt users to update instantly!
+
+---
+
+*Documentation Version 1.0 — Lumora Production Ready Project*

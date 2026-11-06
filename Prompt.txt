@@ -1,0 +1,37 @@
+Ek naya Next.js (App Router, JavaScript, Tailwind CSS) project banao. Ye Lumora ki download website hai.
+
+KYA HAI: Lumora ek free Android app hai jisme AI image prompts milte hain. User prompt dhoondhta hai, ek tap mein copy karta hai ya ChatGPT/Gemini jaise apps mein share karta hai. Website ka kaam: log yahan se APK download karein.
+
+DESIGN:
+- Mobile-first (360px se shuru). Professional dikhe, AI-bana hua nahi.
+- Warm cream background (#FAF8F5), accent sirf #6367FF, dark mode support.
+- Koi neon glow, glassmorphism, gradient text, emoji icons nahi. Icons ke liye lucide-react.
+- Fonts next/font se: Fraunces (headings) + DM Sans (body).
+- Left-aligned editorial layout, animation kam aur kaam ki.
+- Copy chhoti aur specific, buzzwords nahi, fake stats ya reviews nahi.
+
+PAGES:
+1. Home (/): Hero + ek "Download APK" button, real examples (horizontal scroll), 3-step "kaise kaam karta hai", Android install steps ("Unknown sources" allow karna), FAQ, footer.
+2. /privacy aur /terms (sach mein kaam karne wale pages).
+3. Custom 404 page.
+
+SEO (sabse zaroori):
+- Metadata API se title, description, keywords, canonical, Open Graph, Twitter card.
+- Har page ka alag metadata.
+- JSON-LD schema: MobileApplication/SoftwareApplication aur FAQPage (FAQ ke liye).
+- app/sitemap.js, app/robots.js, favicon, OG image (app/opengraph-image).
+- Semantic HTML (ek h1, sahi h2/h3), alt text sab images par, next/image se lazy-load.
+- Target keywords: "AI image prompts", "Gemini photo editing prompts", "ChatGPT image prompts", "free AI prompts app", "Lumora app download".
+- Lighthouse mein Performance, SEO, Accessibility 90+ aana chahiye.
+
+DOWNLOAD: public/Lumora-v1.0.apk ko "/Lumora-v1.0.apk" se link karo (download attribute ke saath).
+
+IMAGES (next.config mein res.cloudinary.com allow karo, URL mein w_500,f_auto,q_auto):
+Ghibli Art: https://res.cloudinary.com/teniiugx/image/upload/v1793771166/lumora/templates/zgjviyu3upiu8xz01ohj.jpg
+1980s Bollywood Retro: https://res.cloudinary.com/teniiugx/image/upload/v1793797553/lumora/templates/hsfdoaxmyrk6aitqi2kt.jpg
+Chibi Sticker Pack: https://res.cloudinary.com/teniiugx/image/upload/v1793881309/lumora/templates/iyj4cn42fu2sajm5dj0t.jpg
+Magazine Cover: https://res.cloudinary.com/teniiugx/image/upload/v1793845026/lumora/templates/bg8xlw1uizsohujkyg65.jpg
+Hug Your Younger Self: https://res.cloudinary.com/teniiugx/image/upload/v1793882337/lumora/templates/vj04emrarqh0iw6x6ppk.jpg
+Pinterest Scrapbook: https://res.cloudinary.com/teniiugx/image/upload/v1793846670/lumora/templates/zq3q6xrifk0wafyjvzau.jpg
+
+Kaam ke end mein batao: folder structure, aur Vercel par deploy kaise karna hai.
