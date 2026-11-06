@@ -17,7 +17,7 @@ const dmSans = DM_Sans({
   weight: ['400', '500', '600', '700'],
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lumora-app.vercel.app';
+const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://my-lumora.vercel.app').replace(/\/$/, '');
 
 export const metadata = {
   metadataBase: new URL(baseUrl),

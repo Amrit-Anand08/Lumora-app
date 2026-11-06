@@ -1,5 +1,5 @@
 export default function sitemap() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lumora-app.vercel.app';
+  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://my-lumora.vercel.app').replace(/\/$/, '');
   const currentDate = new Date().toISOString();
 
   return [

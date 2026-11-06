@@ -9,7 +9,7 @@ export const metadata = {
   openGraph: {
     title: 'Privacy Policy | Lumora',
     description: 'Lumora collects the minimum data possible. No personal info is sold or shared.',
-    url: 'https://lumora-app.vercel.app/privacy',
+    url: 'https://my-lumora.vercel.app/privacy',
   },
 };
 

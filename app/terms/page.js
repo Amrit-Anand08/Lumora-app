@@ -9,7 +9,7 @@ export const metadata = {
   openGraph: {
     title: 'Terms of Service | Lumora',
     description: 'Usage rules, prompt licensing, and AI platform disclaimers for the Lumora app.',
-    url: 'https://lumora-app.vercel.app/terms',
+    url: 'https://my-lumora.vercel.app/terms',
   },
 };
 

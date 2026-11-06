@@ -5,6 +5,8 @@ import InstallGuide from '../components/InstallGuide';
 import FaqSection from '../components/FaqSection';
 import { FAQ_DATA } from '../data/faq';
 
+const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://my-lumora.vercel.app').replace(/\/$/, '');
+
 export const metadata = {
   title: 'Lumora - Free AI Image Prompts Android App | APK Download',
   description:
@@ -16,7 +18,7 @@ export const metadata = {
     title: 'Lumora - Free AI Image Prompts Android App',
     description:
       'Curated AI image prompts for ChatGPT, Gemini, and Midjourney. Download the Android APK (v1.0).',
-    url: 'https://lumora-app.vercel.app',
+    url: baseUrl,
   },
 };
 
