@@ -38,6 +38,9 @@ export const metadata = {
     'AI image generator prompts',
     'Android AI app free download',
   ],
+  verification: {
+    google: "1BGmHTV5d_kPy7WmQv3v6ZWmjNzQy36NNyek66sKhWE",
+  },
   authors: [{ name: 'Lumora' }],
   creator: 'Lumora',
   publisher: 'Lumora',
